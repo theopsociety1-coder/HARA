@@ -10,7 +10,8 @@ function HomeIcon({ active }: { active: boolean }) {
   const color = active ? theme.cream : theme.muted
   return (
     <View style={styles.iconContainer}>
-      <View style={[styles.homeRoof, { borderBottomColor: color }]} />
+      <View style={[styles.iconOuter, { borderColor: color }]} />
+      <View style={[styles.homeRoof, { borderBottomColor: color, borderLeftColor: 'transparent', borderRightColor: 'transparent' }]} />
       <View style={[styles.homeBody, { borderColor: color }]} />
     </View>
   )
@@ -20,20 +21,17 @@ function MapIcon({ active }: { active: boolean }) {
   const color = active ? theme.cream : theme.muted
   return (
     <View style={styles.iconContainer}>
-      <View style={[styles.mapPin, { borderColor: color }]}>
-        <View style={[styles.mapPinDot, { backgroundColor: color }]} />
-      </View>
+      <View style={[styles.mapPin, { borderColor: color }]} />
+      <View style={[styles.mapPinDot, { borderColor: color }]} />
     </View>
   )
 }
 
 function CameraIcon() {
   return (
-    <View style={styles.cameraContainer}>
-      <View style={styles.cameraCircle}>
-        <View style={styles.cameraPlus} />
-        <View style={[styles.cameraPlus, styles.cameraPlusVert]} />
-      </View>
+    <View style={styles.iconContainer}>
+      <View style={[styles.cameraOuter, { borderColor: theme.cream }]} />
+      <View style={[styles.cameraDot, { borderColor: theme.cream }]} />
     </View>
   )
 }
@@ -44,7 +42,6 @@ function BellIcon({ active }: { active: boolean }) {
     <View style={styles.iconContainer}>
       <View style={[styles.bellBody, { borderColor: color }]} />
       <View style={[styles.bellTop, { borderColor: color }]} />
-      <View style={[styles.bellClapper, { backgroundColor: color }]} />
     </View>
   )
 }
@@ -149,13 +146,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconOuter: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderRadius: 11,
+    position: 'absolute',
+  },
   
-  // Home - Minimalist house outline
+  // Home - House outline
   homeRoof: {
     width: 0,
     height: 0,
-    borderLeftWidth: 12,
-    borderRightWidth: 12,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
     borderBottomWidth: 8,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
@@ -171,57 +175,46 @@ const styles = StyleSheet.create({
     bottom: 2,
   },
   
-  // Map - Minimalist pin outline
+  // Map - Pin outline
   mapPin: {
     width: 16,
-    height: 20,
+    height: 18,
     borderWidth: 2,
     borderRadius: 8,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8,
-    position: 'relative',
+    position: 'absolute',
   },
   mapPinDot: {
+    width: 4,
+    height: 4,
+    borderWidth: 2,
+    borderRadius: 2,
+    position: 'absolute',
+    top: 7,
+    left: 4,
+  },
+  
+  // Camera - Circle outline with dot
+  cameraOuter: {
+    width: 22,
+    height: 22,
+    borderWidth: 2,
+    borderRadius: 11,
+    position: 'absolute',
+  },
+  cameraDot: {
     width: 6,
     height: 6,
+    borderWidth: 2,
     borderRadius: 3,
     position: 'absolute',
-    top: 5,
-    left: 3,
   },
   
-  // Camera - Circle with plus outline
-  cameraContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cameraButtonWrapper: {
-    marginTop: -8,
-  },
-  cameraCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    borderWidth: 2,
-    borderColor: theme.cream,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  cameraPlus: {
-    width: 18,
-    height: 2,
-    backgroundColor: theme.cream,
-    position: 'absolute',
-  },
-  cameraPlusVert: {
-    transform: [{ rotate: '90deg' }],
-  },
-  
-  // Bell - Minimalist outline
+  // Bell - Outline
   bellBody: {
     width: 14,
-    height: 16,
+    height: 14,
     borderWidth: 2,
     borderRadius: 7,
     borderTopLeftRadius: 0,
@@ -231,24 +224,17 @@ const styles = StyleSheet.create({
   },
   bellTop: {
     width: 8,
-    height: 8,
+    height: 6,
     borderWidth: 2,
     borderBottomWidth: 0,
     borderTopLeftRadius: 4,
     borderTopRightRadius: 4,
     position: 'absolute',
-    top: 2,
+    top: 4,
     left: 6,
   },
-  bellClapper: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    position: 'absolute',
-    bottom: 0,
-  },
   
-  // User - Minimalist outline
+  // User - Outline
   userHead: {
     width: 12,
     height: 12,
@@ -259,12 +245,17 @@ const styles = StyleSheet.create({
   },
   userBody: {
     width: 18,
-    height: 10,
+    height: 8,
     borderWidth: 2,
     borderTopWidth: 0,
     borderBottomLeftRadius: 9,
     borderBottomRightRadius: 9,
     position: 'absolute',
     bottom: 2,
+  },
+  
+  // Camera button wrapper
+  cameraButtonWrapper: {
+    marginTop: -8,
   },
 })
