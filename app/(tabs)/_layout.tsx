@@ -32,6 +32,14 @@ export default function TabLayout() {
         name="create"
         options={{
           title: '',
+          tabBarStyle: {
+            backgroundColor: 'rgba(22, 20, 18, 0.95)',
+            borderTopWidth: 1,
+            borderTopColor: theme.border,
+            paddingTop: 8,
+            height: Platform.OS === 'ios' ? 88 : 70,
+            display: 'none',
+          },
           tabBarIcon: ({ color, focused }) => (
             <View style={styles.cameraButton}>
               <Text style={styles.cameraIcon}>📷</Text>

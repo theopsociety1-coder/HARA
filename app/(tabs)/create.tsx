@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, ScrollView, Image, ActivityIndicator, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, ScrollView, Image, ActivityIndicator, Dimensions, StatusBar } from 'react-native'
 import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'expo-router'
 import { CameraView, CameraType, useCameraPermissions, useMicrophonePermissions } from 'expo-camera'
@@ -353,6 +353,7 @@ export default function CreateScreen() {
   if (screen === 'camera') {
     return (
       <View style={styles.container}>
+        <StatusBar hidden />
         {/* Camera View */}
         <CameraView
           ref={cameraRef}
@@ -478,6 +479,7 @@ export default function CreateScreen() {
   if (screen === 'preview') {
     return (
       <View style={styles.container}>
+        <StatusBar hidden />
         <ScrollView style={styles.previewScroll} contentContainerStyle={styles.previewContent}>
           {/* Main Image (Back Camera) */}
           {capturedImage && (
@@ -705,10 +707,11 @@ export default function CreateScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.bg,
+    backgroundColor: '#000000',
   },
   camera: {
     flex: 1,
+    width: '100%',
   },
   topControls: {
     flexDirection: 'row',
