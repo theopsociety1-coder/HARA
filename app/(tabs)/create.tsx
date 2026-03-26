@@ -475,66 +475,92 @@ export default function CreateScreen() {
     )
   }
 
-  // Preview Screen
+  // Preview Screen - Full Screen with Rating
   if (screen === 'preview') {
     return (
-      <View style={styles.container}>
+      <View style={styles.fullScreenContainer}>
         <StatusBar hidden />
-        <ScrollView style={styles.previewScroll} contentContainerStyle={styles.previewContent}>
-          {/* Main Image (Back Camera) */}
+        
+        {/* Full Screen BeReal Style Photo */}
+        <View style={styles.fullScreenPreview}>
           {capturedImage && (
-            <View style={styles.previewImageContainer}>
-              <Image source={{ uri: capturedImage }} style={styles.previewImage} />
+            <Image source={{ uri: capturedImage }} style={styles.fullScreenImage} />
+          )}
+          
+          {/* Selfie Overlay - BeReal Style (Bottom Right) */}
+          {capturedFrontImage && (
+            <View style={styles.berealSelfieOverlay}>
+              <Image source={{ uri: capturedFrontImage }} style={styles.berealSelfieImage} />
+            </View>
+          )}
+          
+          {/* Rating Overlay - Tap to Rate */}
+          <View style={styles.ratingOverlay}>
+            <Text style={styles.ratingOverlayTitle}>Rate this dish</Text>
+            
+            {/* Interactive Rating */}
+            <View style={styles.interactiveRating}>
+              <View style={styles.ratingStarsRow}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <TouchableOpacity 
+                    key={star} 
+                    onPress={() => setRating(star)}
+                    style={styles.ratingStarButton}
+                  >
+                    <Text style={[
+                      styles.ratingStarIcon,
+                      star <= rating && styles.ratingStarFilled
+                    ]}>
+                      ★
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
               
-              {/* Front Camera Overlay (Picture-in-Picture) */}
-              {capturedFrontImage && (
-                <View style={styles.pipOverlay}>
-                  <Image source={{ uri: capturedFrontImage }} style={styles.pipImage} />
-                </View>
-              )}
+              {/* Precise Rating Input */}
+              <View style={styles.ratingInputContainer}>
+                <TextInput
+                  style={styles.ratingInput}
+                  value={rating > 0 ? rating.toFixed(1) : ''}
+                  onChangeText={(text) => {
+                    const num = parseFloat(text)
+                    if (!isNaN(num) && num >= 0 && num <= 5) {
+                      setRating(num)
+                    } else if (text === '') {
+                      setRating(0)
+                    }
+                  }}
+                  placeholder="0.0"
+                  placeholderTextColor="#666"
+                  keyboardType="decimal-pad"
+                  maxLength={3}
+                />
+                <Text style={styles.ratingInputLabel}>/ 5.0</Text>
+              </View>
+              
+              <Text style={styles.ratingHint}>Tap stars or type rating</Text>
             </View>
-          )}
-
-          {/* BTS Video Preview */}
-          {btsVideoUri && (
-            <View style={styles.btsPreview}>
-              <Text style={styles.btsPreviewLabel}>BTS</Text>
-              <Video
-                source={{ uri: btsVideoUri }}
-                style={styles.btsVideo}
-                shouldPlay
-                isLooping
-                resizeMode={ResizeMode.COVER}
-              />
-            </View>
-          )}
-
-          {/* Metadata Display */}
-          <View style={styles.previewMetadata}>
-            <Text style={styles.previewMetadataText}>
-              {captureMetadata.retakes} retake{captureMetadata.retakes !== 1 ? 's' : ''}
-              {btsVideoUri && ' · Has BTS'}
-            </Text>
           </View>
-
-          {/* Action Buttons */}
-          <View style={styles.previewActions}>
-            <TouchableOpacity style={styles.retakeButton} onPress={handleRetake}>
-              <Text style={styles.retakeButtonText}>Retake</Text>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={styles.continueButton} 
-              onPress={() => setScreen('rate')}
-            >
-              <Text style={styles.continueButtonText}>Continue</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+        </View>
+        
+        {/* Bottom Actions */}
+        <View style={styles.previewBottomActions}>
+          <TouchableOpacity style={styles.retakeButtonLarge} onPress={handleRetake}>
+            <Text style={styles.retakeButtonTextLarge}>Retake</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.continueButtonLarge, rating > 0 && styles.continueButtonActive]}
+            onPress={() => setScreen('details')}
+            disabled={rating === 0}
+          >
+            <Text style={styles.continueButtonTextLarge}>Next</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
 
-  // Rate Screen
+  // Rate Screen - DEPRECATED (keeping for backup)
   if (screen === 'rate') {
     return (
       <View style={styles.container}>
@@ -897,6 +923,140 @@ const styles = StyleSheet.create({
     backgroundColor: theme.accent,
   },
   
+  // Full Screen Preview styles
+  fullScreenContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  fullScreenPreview: {
+    flex: 1,
+    position: 'relative',
+  },
+  fullScreenImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  berealSelfieOverlay: {
+    position: 'absolute',
+    bottom: 200,
+    right: 20,
+    width: 100,
+    height: 130,
+    borderRadius: 12,
+    overflow: 'hidden',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  berealSelfieImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  ratingOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    paddingTop: 20,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+  },
+  ratingOverlayTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  interactiveRating: {
+    alignItems: 'center',
+  },
+  ratingStarsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  ratingStarButton: {
+    padding: 8,
+  },
+  ratingStarIcon: {
+    fontSize: 36,
+    color: '#444444',
+  },
+  ratingStarFilled: {
+    color: theme.gold,
+  },
+  ratingInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 12,
+  },
+  ratingInput: {
+    width: 80,
+    height: 50,
+    backgroundColor: '#222222',
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#444444',
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  ratingInputLabel: {
+    color: '#888888',
+    fontSize: 20,
+    fontWeight: '500',
+  },
+  ratingHint: {
+    color: '#666666',
+    fontSize: 12,
+  },
+  previewBottomActions: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    gap: 12,
+    backgroundColor: '#000000',
+  },
+  retakeButtonLarge: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 14,
+    backgroundColor: '#333333',
+    alignItems: 'center',
+  },
+  retakeButtonTextLarge: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  continueButtonLarge: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 14,
+    backgroundColor: '#333333',
+    alignItems: 'center',
+  },
+  continueButtonActive: {
+    backgroundColor: theme.accent,
+  },
+  continueButtonTextLarge: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+
   // Preview styles
   previewScroll: {
     flex: 1,
@@ -1008,11 +1168,6 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     marginTop: 20,
-  },
-  ratingHint: {
-    color: theme.muted,
-    fontSize: 14,
-    marginTop: 8,
   },
   ratingStars: {
     flexDirection: 'row',
